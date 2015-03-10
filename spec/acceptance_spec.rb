@@ -16,6 +16,7 @@ RSpec.describe 'server' do
       server_response.body = "Hello World"
     end
     t = Thread.new {server.start}
+    t.abort_on_exception = true
     client_response = Net::HTTP.get_response('localhost','/',8889)
     expect(client_response["Content-Length"]).to eq '11'
     expect(client_response.code).to eq '200'
