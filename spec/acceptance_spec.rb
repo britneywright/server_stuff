@@ -1,5 +1,6 @@
 require 'net/http'
 require 'pry'
+require 'server_stuff'
 
 RSpec.describe 'server' do
   it "responds to web requests" do
@@ -10,8 +11,11 @@ RSpec.describe 'server' do
   end
 
   it "responds to web requests" do
+    server = Server.new(8889)
+    t = Thread.new {server.start}
     response = Net::HTTP.get_response('localhost','/',8889)
     expect(response["Content-Length"]).to eq '11'
+    t.kill
   end
 
   xit "responds to web requests" do
