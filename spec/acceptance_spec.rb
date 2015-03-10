@@ -11,10 +11,15 @@ RSpec.describe 'server' do
   end
 
   it "responds to web requests" do
-    server = Server.new(8889)
+    server = Server.new(8889) do |server_response|
+      server_response.code = 200
+      server_response.body = "Hello World"
+    end
     t = Thread.new {server.start}
-    response = Net::HTTP.get_response('localhost','/',8889)
-    expect(response["Content-Length"]).to eq '11'
+    client_response = Net::HTTP.get_response('localhost','/',8889)
+    expect(client_response["Content-Length"]).to eq '11'
+    expect(client_response.code).to eq '200'
+    expect(client_response.body).to eq "Hello World"
     t.kill
   end
 
