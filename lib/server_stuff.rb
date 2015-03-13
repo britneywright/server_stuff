@@ -4,19 +4,19 @@ require 'socket'
 
 class Server
   attr_accessor :code, :body
-  
+
   def initialize(port)
     @port = port
     @code = code
     @body = body
     yield self if block_given?
   end
-  
+
   def start
-    server = TCPServer.new(@port)
+    @server = TCPServer.new(@port)
     puts "Running now"
     loop do
-      s = server.accept
+      s = @server.accept
       request = s.gets
       STDERR.puts request
       response = "HTTP/1.1 #{@code} OK\r\n" +
@@ -29,4 +29,8 @@ class Server
     end
   end
 
+  def stop
+    @server.close_read
+    @server.close_write
+  end
 end
